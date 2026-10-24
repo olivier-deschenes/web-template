@@ -9,7 +9,5 @@
   },
   // Public, non-secret values. Secrets go in .dev.vars locally and
   // `wrangler secret put` in production. Run `bun run cf-typegen` after edits.
-  "vars": {
-    "SITE_URL": "http://localhost:3000",
-  },
+  "vars": {},
 }
