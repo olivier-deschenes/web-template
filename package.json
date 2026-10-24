@@ -7,6 +7,7 @@
     "#/*": "./src/*"
   },
   "scripts": {
+    "init": "bun scripts/init.ts",
     "dev": "vite dev --port 3000",
     "generate-routes": "tsr generate",
     "build": "vite build",
