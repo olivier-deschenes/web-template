@@ -1,8 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { seo } from '#/lib/seo'
 import { m } from '#/paraglide/messages'
 
-export const Route = createFileRoute('/')({ component: Home })
+export const Route = createFileRoute('/')({
+  head: () => seo({ path: '/' }),
+  component: Home,
+})
 
 function Home() {
   return (

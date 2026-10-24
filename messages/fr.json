@@ -1,5 +1,6 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
+  "site_description": "Un gabarit de site web TanStack Start.",
   "skip_to_content": "Aller au contenu",
   "nav_home": "Accueil",
   "nav_about": "À propos",

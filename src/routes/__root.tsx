@@ -12,6 +12,7 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
 import { SiteFooter } from '#/components/layout/SiteFooter'
 import { SiteHeader } from '#/components/layout/SiteHeader'
+import { seo } from '#/lib/seo'
 import { themeScript } from '#/lib/theme'
 import { m } from '#/paraglide/messages'
 import { getLocale, getTextDirection } from '#/paraglide/runtime'
@@ -34,26 +35,23 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     }
   },
 
-  head: () => ({
-    meta: [
-      {
-        charSet: 'utf-8',
-      },
-      {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
-      },
-      {
-        title: site.name,
-      },
-    ],
-    links: [
-      {
-        rel: 'stylesheet',
-        href: appCss,
-      },
-    ],
-  }),
+  head: () => {
+    // Site-wide defaults; routes override them with their own seo() call.
+    const defaults = seo()
+    return {
+      meta: [
+        { charSet: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'theme-color', content: site.themeColor },
+        ...defaults.meta,
+      ],
+      links: [
+        { rel: 'stylesheet', href: appCss },
+        { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+        { rel: 'manifest', href: '/site.webmanifest' },
+      ],
+    }
+  },
   shellComponent: RootDocument,
   component: RootLayout,
 })
