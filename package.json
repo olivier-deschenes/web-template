@@ -1,5 +1,5 @@
 {
-  "name": "statement-analyser",
+  "name": "web-template",
   "private": true,
   "type": "module",
   "imports": {
