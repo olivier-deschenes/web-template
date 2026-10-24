@@ -19,13 +19,15 @@ const localeNames: Record<Locale, string> = {
 }
 
 export function LocaleSwitcher() {
+  const currentLocale = getLocale()
+
   return (
     <Select
-      value={getLocale()}
+      value={currentLocale}
       onValueChange={(locale) => setLocale(locale as Locale)}
     >
       <SelectTrigger size="sm" aria-label={m.language_label()}>
-        <SelectValue />
+        <SelectValue>{localeNames[currentLocale]}</SelectValue>
       </SelectTrigger>
       <SelectContent position="popper" align="end">
         {locales.map((locale) => (

@@ -1,5 +1,7 @@
 import {
   HeadContent,
+  Outlet,
+  ScriptOnce,
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
@@ -8,7 +10,12 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
-import { getLocale } from '#/paraglide/runtime'
+import { SiteFooter } from '#/components/layout/SiteFooter'
+import { SiteHeader } from '#/components/layout/SiteHeader'
+import { themeScript } from '#/lib/theme'
+import { m } from '#/paraglide/messages'
+import { getLocale, getTextDirection } from '#/paraglide/runtime'
+import { site } from '#/site'
 
 import appCss from '../styles.css?url'
 
@@ -37,7 +44,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: site.name,
       },
     ],
     links: [
@@ -48,12 +55,15 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
   shellComponent: RootDocument,
+  component: RootLayout,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang={getLocale()}>
+    // The theme script adds `.dark` before hydration.
+    <html lang={getLocale()} dir={getTextDirection()} suppressHydrationWarning>
       <head>
+        <ScriptOnce>{themeScript}</ScriptOnce>
         <HeadContent />
       </head>
       <body>
@@ -73,5 +83,23 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
+  )
+}
+
+function RootLayout() {
+  return (
+    <div className="flex min-h-dvh flex-col">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-background focus:px-3 focus:py-2 focus:text-sm focus:ring-1 focus:ring-ring"
+      >
+        {m.skip_to_content()}
+      </a>
+      <SiteHeader />
+      <main id="main" className="flex-1">
+        <Outlet />
+      </main>
+      <SiteFooter />
+    </div>
   )
 }
