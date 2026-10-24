@@ -3,44 +3,37 @@
 // - Router example: https://github.com/TanStack/router/tree/main/examples/react/i18n-paraglide#switching-locale
 import { getLocale, locales, setLocale } from '#/paraglide/runtime'
 import { m } from '#/paraglide/messages'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '#/components/ui/select'
 
-export default function ParaglideLocaleSwitcher() {
-  const currentLocale = getLocale()
+import type { Locale } from '#/paraglide/runtime'
 
+const localeNames: Record<Locale, string> = {
+  en: 'English',
+  fr: 'Français',
+}
+
+export function LocaleSwitcher() {
   return (
-    <div
-      style={{
-        display: 'flex',
-        gap: '0.5rem',
-        alignItems: 'center',
-        color: 'inherit',
-      }}
-      aria-label={m.language_label()}
+    <Select
+      value={getLocale()}
+      onValueChange={(locale) => setLocale(locale as Locale)}
     >
-      <span style={{ opacity: 0.85 }}>
-        {m.current_locale({ locale: currentLocale })}
-      </span>
-      <div style={{ display: 'flex', gap: '0.25rem' }}>
+      <SelectTrigger size="sm" aria-label={m.language_label()}>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent position="popper" align="end">
         {locales.map((locale) => (
-          <button
-            key={locale}
-            onClick={() => setLocale(locale)}
-            aria-pressed={locale === currentLocale}
-            style={{
-              cursor: 'pointer',
-              padding: '0.35rem 0.75rem',
-              borderRadius: '999px',
-              border: '1px solid #d1d5db',
-              background: locale === currentLocale ? '#0f172a' : 'transparent',
-              color: locale === currentLocale ? '#f8fafc' : 'inherit',
-              fontWeight: locale === currentLocale ? 700 : 500,
-              letterSpacing: '0.01em',
-            }}
-          >
-            {locale.toUpperCase()}
-          </button>
+          <SelectItem key={locale} value={locale} lang={locale}>
+            {localeNames[locale]}
+          </SelectItem>
         ))}
-      </div>
-    </div>
+      </SelectContent>
+    </Select>
   )
 }
