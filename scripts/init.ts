@@ -52,7 +52,22 @@ function edit(path: string, change: (content: string) => string) {
 
 const quote = (value: string) => `'${value.replace(/'/g, "\\'")}'`
 
-edit('package.json', (s) => s.replace(/"name": ".*?"/, `"name": "${slug}"`))
+// A new site starts its own history at 0.1.0.
+const today = new Date().toISOString().slice(0, 10)
+
+edit('package.json', (s) =>
+  s
+    .replace(/"name": ".*?"/, `"name": "${slug}"`)
+    .replace(/"version": ".*?"/, '"version": "0.1.0"'),
+)
+edit('CHANGELOG.md', (s) => {
+  const intro = s.slice(0, s.search(/^## \[/m)).trimEnd()
+  return `${intro}\n\n## [0.1.0] - ${today}\n\n### Added\n\n- First release of ${name}.\n`
+})
+edit('src/components/changelog/previews.tsx', (s) => {
+  const comment = /^\/\/ One picture[\s\S]*?\n(?=export)/m.exec(s)?.[0] ?? ''
+  return `import type { ComponentType } from 'react'\n\n${comment}export const previews: Record<string, ComponentType> = {}\n`
+})
 edit('wrangler.jsonc', (s) => s.replace(/"name": ".*?"/, `"name": "${slug}"`))
 edit('.cta.json', (s) =>
   s.replace(/"projectName": ".*?"/, `"projectName": "${slug}"`),

@@ -1,0 +1,42 @@
+# Project conventions
+
+These instructions apply to every coding agent (Codex, Claude Code, Cursor, Copilot and others). `CLAUDE.md` imports this file. The `release` skill in `.agents/skills/release` (linked from `.claude/skills/release`) walks through the versioning steps below.
+
+Website template: TanStack Start on Cloudflare Workers, shadcn/ui, Tailwind v4, Paraglide i18n. Package manager is bun.
+
+## Rules
+
+- Use TanStack libraries (Router, Query, Form, Table, Store, DB) for what they cover, following their docs.
+- UI uses shadcn/ui and Tailwind. Before building a component, check whether shadcn has it and install it with `bunx shadcn@latest add <name>`. Don't hand-write a replacement.
+- Design follows https://vercel.com/design.md: Geist, monochrome tokens from `src/styles.css`, no decorative gradients or motion.
+- Import from `src` with the `#/` alias (`#/lib/utils`, `#/components/ui/button`).
+- Every user-facing string goes in `messages/en.json` and `messages/fr.json` and is used through `m.key()`. Don't hardcode copy.
+- Every page route sets `head: () => seo({ title, path })`. Public pages also go in `site.sitemapPaths`.
+- Server-only code lives in `*.server.ts` files. Read env through `#/env.server`.
+- Don't edit generated files: `src/routeTree.gen.ts`, `src/paraglide/`, `worker-configuration.d.ts`.
+
+## Versioning and changelog
+
+The site has a public changelog at `/changelog`, rendered from `CHANGELOG.md` by `src/routes/changelog.tsx` (parsed in `src/lib/changelog.ts`). The footer shows `version` from `package.json` and links to it.
+
+- Every commit bumps `version` in `package.json` and adds an entry at the top of `CHANGELOG.md` in the same commit: `## [x.y.z] - YYYY-MM-DD`, then `### Added`, `### Changed` or `### Fixed` with short user-facing bullets. Write for the people using the site, not for developers.
+- Major for breaking changes to stored data, URLs or file formats; minor for new features and visible behavior changes; patch for fixes, refactors, docs and tooling.
+- If several commits go out together, each still gets its own version and entry.
+- A release that changes something users can see also gets a picture on the changelog page: add its version to `previews` in `src/components/changelog/previews.tsx`. Use a `BeforeAfter` pair when it changes something that existed, a single `Shot` when it adds something new. Build it from the parts in `src/components/changelog/kit.tsx` (add a part there when a preview needs one), keep it small and static, and reuse existing `m.*` labels. Tooling, docs and refactor releases get none.
+- `src/lib/version.test.ts` fails if the newest changelog entry doesn't match `package.json`; `src/components/changelog/previews.test.ts` fails if a preview's version isn't in `CHANGELOG.md`.
+
+## Checks
+
+Before committing, run `bun run check`, `bun run lint`, `bun run typecheck` and `bun run test`. CI runs the same checks plus `bun run build`.
+
+## Finishing a task (required, not optional)
+
+A task is not done until every step below is complete. Do them yourself, without being asked.
+
+1. Bump `version` in `package.json` (major/minor/patch as above).
+2. Add the matching `## [x.y.z] - YYYY-MM-DD` entry at the top of `CHANGELOG.md`, with today's date. If the change is visible, add its changelog preview and check it in light and dark.
+3. Run `bun run check`, `bun run lint`, `bun run typecheck` and `bun run test`; fix anything that fails.
+4. Commit only the files for this task with a concise imperative subject (≤72 chars) and a body explaining what changed and why. Don't push unless asked.
+5. In your final message, report the new version and the commit hash.
+
+For behavior tweaks the user hasn't confirmed, don't commit until they approve. If they reject it, discard the working-tree changes (`git restore`) instead of reverting.

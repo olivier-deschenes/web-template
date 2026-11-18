@@ -15,5 +15,16 @@
   "error_body": "An unexpected error occurred. Try again, or go back to the home page.",
   "try_again": "Try again",
   "go_home": "Go to the home page",
-  "footer_rights": "© {year} {name}"
+  "footer_rights": "© {year} {name}",
+  "nav_changelog": "Changelog",
+  "app_version": "v{version}",
+  "app_version_label": "Version {version}, see the changelog",
+  "changelog_title": "Changelog",
+  "changelog_description": "New features, improvements and fixes, newest first. Entries are written in English.",
+  "seo_changelog_description": "New features, improvements and fixes, newest first.",
+  "changelog_before": "Before",
+  "changelog_after": "After",
+  "changelog_latest": "Latest",
+  "changelog_show_all": "Show all {count} changes",
+  "changelog_show_fewer": "Show fewer"
 }

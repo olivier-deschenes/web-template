@@ -1,0 +1,1 @@
+Follow the project conventions in [AGENTS.md](../AGENTS.md). Every commit bumps `version` in `package.json` and adds a `## [x.y.z] - YYYY-MM-DD` entry at the top of `CHANGELOG.md`; see `.agents/skills/release/SKILL.md` for the full steps, including changelog previews.

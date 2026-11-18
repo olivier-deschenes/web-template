@@ -60,15 +60,19 @@ src/
   routes/
     __root.tsx            <html> shell, head defaults, header and footer
     index.tsx, about.tsx  Example pages
+    changelog.tsx         Public changelog, rendered from CHANGELOG.md
     sitemap[.]xml.ts      Generated from site.sitemapPaths
     robots[.]txt.ts
     site[.]webmanifest.ts
   components/
-    layout/               SiteHeader, SiteFooter
+    layout/               SiteHeader, SiteFooter (shows the version)
+    changelog/            Pictures for visible releases and their kit
     ui/                   shadcn components (added by the CLI)
   lib/
     seo.ts                seo() head helper: title, OG, canonical, hreflang
     theme.ts              Pre-paint script that follows the system theme
+    changelog.ts          Parses CHANGELOG.md into releases
+    version.ts            The version from package.json
 messages/                 Translations, one JSON file per locale
 public/                   Static files served as is
 ```
@@ -107,6 +111,12 @@ Add it to `locales` in `project.inlang/settings.json`, create `messages/<locale>
 
 - Secrets and vars: declare them in the schema in `src/env.server.ts`. Put local values in `.dev.vars` (copy `.dev.vars.example`) and set production values with `wrangler secret put NAME`.
 - KV, D1, R2 and other bindings: add them to `wrangler.jsonc`, run `bun run cf-typegen`, and read them from `import { env } from 'cloudflare:workers'`.
+
+## Versioning and changelog
+
+Every commit bumps `version` in `package.json` and adds a `## [x.y.z] - YYYY-MM-DD` entry at the top of `CHANGELOG.md`. The footer shows the version and links to `/changelog`, which renders those entries; visible releases also get a small picture in `src/components/changelog/previews.tsx`. Tests fail if the newest entry and `package.json` disagree. `bun run init` resets the history to `0.1.0` for a new site.
+
+Coding agents learn these rules from `AGENTS.md` (Codex and most others; `CLAUDE.md` imports it, `.github/copilot-instructions.md` points to it) and the `release` skill in `.agents/skills/release`, linked for Claude Code from `.claude/skills/release`.
 
 ## Deploy
 
