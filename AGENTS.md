@@ -1,6 +1,6 @@
 # Project conventions
 
-These instructions apply to every coding agent (Codex, Claude Code, Cursor, Copilot and others). `CLAUDE.md` imports this file. The `release` skill in `.agents/skills/release` (linked from `.claude/skills/release`) walks through the versioning steps below.
+These instructions apply to every coding agent (Codex, Claude Code, Cursor, Copilot and others). `CLAUDE.md` imports this file. The `release` skill in `.agents/skills/release` (linked from `.claude/skills/release`) walks through the release steps below: version, changelog, checks, commit, push and deploy.
 
 Website template: TanStack Start on Cloudflare Workers, shadcn/ui, Tailwind v4, Paraglide i18n. Package manager is bun.
 
@@ -27,16 +27,21 @@ The site has a public changelog at `/changelog`, rendered from `CHANGELOG.md` by
 
 ## Checks
 
-Before committing, run `bun run check`, `bun run lint`, `bun run typecheck` and `bun run test`. CI runs the same checks plus `bun run build`.
+Before committing, run `bun run check`, `bun run lint`, `bun run knip`, `bun run typecheck` and `bun run test`. CI runs the same checks plus `bun run build`. Knip fails on unused files, exports and dependencies: delete dead code rather than silencing it. Only add to `knip.json` for files used outside the import graph; once code uses a starter dependency listed in `ignoreDependencies`, remove it from that list.
+
+## Git
+
+After each task, commit and push to `main` without waiting to be asked. Pushing `main` runs the versioned `.githooks/pre-push` hook (installed by `bun install`, whose `prepare` script sets `core.hooksPath`), which runs the CI checks and then deploys with `bun run deploy`; if either fails the push is aborted, so fix the failure and push again. Don't use `--no-verify` unless told to.
+
+For behavior tweaks the user hasn't confirmed, don't commit until they approve. If they reject it, discard the working-tree changes (`git restore`) instead of reverting.
 
 ## Finishing a task (required, not optional)
 
-A task is not done until every step below is complete. Do them yourself, without being asked.
+A task is not done until every step below is complete. Do them yourself, without being asked, and don't end your turn with uncommitted or unpushed work.
 
 1. Bump `version` in `package.json` (major/minor/patch as above).
 2. Add the matching `## [x.y.z] - YYYY-MM-DD` entry at the top of `CHANGELOG.md`, with today's date. If the change is visible, add its changelog preview and check it in light and dark.
-3. Run `bun run check`, `bun run lint`, `bun run typecheck` and `bun run test`; fix anything that fails.
-4. Commit only the files for this task with a concise imperative subject (≤72 chars) and a body explaining what changed and why. Don't push unless asked.
-5. In your final message, report the new version and the commit hash.
-
-For behavior tweaks the user hasn't confirmed, don't commit until they approve. If they reject it, discard the working-tree changes (`git restore`) instead of reverting.
+3. Run `bun run check`, `bun run lint`, `bun run knip`, `bun run typecheck` and `bun run test`; fix anything that fails.
+4. Commit only the files for this task with a concise imperative subject (≤72 chars) and a body explaining what changed and why.
+5. `git push origin main`. If the pre-push hook fails, fix the cause, amend or add a commit (with its own version and changelog entry), and push again.
+6. In your final message, report the new version, the commit hash and whether the push and deploy succeeded.

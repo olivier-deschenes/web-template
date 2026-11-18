@@ -1,11 +1,11 @@
 ---
 name: release
-description: Version and document a change before committing in this repo. Use at the end of every task, before every commit, or when asked to bump the version, update the changelog or add a changelog preview.
+description: Version, document, commit, push and deploy a change in this repo. Use at the end of every task, before every commit or push, or when asked to bump the version, update the changelog, add a changelog preview, or deploy.
 ---
 
 # Release a change
 
-Every commit in this repo is a release. Do all of these in the same commit as the change.
+Every commit in this repo is a release, and every push to `main` deploys it. Do all of these yourself at the end of each task, without being asked.
 
 ## 1. Pick the version
 
@@ -60,11 +60,23 @@ If users can see the change, add a picture keyed by the new version in `src/comp
 ## 4. Verify
 
 ```bash
-bun run check && bun run lint && bun run typecheck && bun run test
+bun run check && bun run lint && bun run knip && bun run typecheck && bun run test
 ```
 
 `src/lib/version.test.ts` fails if the newest entry doesn't match `package.json`, and `src/components/changelog/previews.test.ts` fails if a preview's version isn't a release in `CHANGELOG.md`.
 
+Knip fails on unused files, exports and dependencies: delete dead code rather than silencing it.
+
 ## 5. Commit
 
-Commit the change, `package.json`, `CHANGELOG.md` and any preview together with a concise imperative subject (≤72 chars) and a body explaining what changed and why. Report the new version and commit hash.
+Commit only the files for this task, with `package.json`, `CHANGELOG.md` and any preview, using a concise imperative subject (≤72 chars) and a body explaining what changed and why. For behavior tweaks the user hasn't confirmed, wait for their approval first.
+
+## 6. Push and deploy
+
+```bash
+git push origin main
+```
+
+The `.githooks/pre-push` hook (installed by `bun install`) checks that `HEAD` is `main` with a clean tree, runs the CI checks, then deploys with `bun run deploy`. If anything fails the push is aborted: fix the cause, amend or add a commit (with its own version and changelog entry), and push again. Don't use `--no-verify` unless told to.
+
+Report the new version, the commit hash, and whether the push and deploy succeeded.

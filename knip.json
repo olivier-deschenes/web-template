@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/knip/schema.json",
+  "entry": [
+    "src/routes/**/*.{ts,tsx}",
+    "scripts/*.ts",
+    "src/env.server.ts",
+    "src/components/ui/*.tsx",
+    "src/components/changelog/kit.tsx"
+  ],
+  "project": ["src/**/*.{ts,tsx,css}", "scripts/*.ts"],
+  "ignoreDependencies": [
+    "@tanstack/query-db-collection",
+    "@tanstack/react-db",
+    "@tanstack/react-form",
+    "@tanstack/react-store",
+    "@tanstack/react-table",
+    "@tanstack/store",
+    "@tanstack/devtools-event-client",
+    "@testing-library/user-event"
+  ]
+}

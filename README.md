@@ -44,6 +44,7 @@ Starting point for websites built with TanStack Start, deployed to Cloudflare Wo
 | `bun run test`         | Run tests once (`test:watch` to keep watching)                |
 | `bun run typecheck`    | TypeScript check                                              |
 | `bun run lint`         | ESLint                                                        |
+| `bun run knip`         | Unused files, exports and dependencies                        |
 | `bun run format`       | Prettier and ESLint fixes                                     |
 | `bun run check`        | Prettier check (used by CI)                                   |
 | `bun run cf-typegen`   | Regenerate `worker-configuration.d.ts` after editing wrangler |
@@ -124,6 +125,8 @@ Coding agents learn these rules from `AGENTS.md` (Codex and most others; `CLAUDE
 bunx wrangler login
 bun run deploy
 ```
+
+Pushing `main` also deploys: `bun install` points git at `.githooks`, whose `pre-push` hook runs the CI checks (`check`, `lint`, `knip`, `typecheck`, `test`) and then `bun run deploy`, aborting the push if either fails. Skip it with `git push --no-verify`.
 
 ## Design
 
